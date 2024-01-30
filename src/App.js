@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
-function App() {
+const App = () => {
+  const [name, setName] = useState('');
+  const [names, setNames] = useState([]);
+
+  useEffect(() => {
+
+    const savedNames = localStorage.getItem('names');
+    if (savedNames) {
+      setNames(JSON.parse(savedNames));
+    }
+  }, []);
+
+  useEffect(() => {
+    
+    localStorage.setItem('names', JSON.stringify(names));
+  }, [names]);
+
+  const handleInputChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleSaveClick = () => {
+
+    setNames([...names, name]);
+    
+    setName('');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Список имен</h1>
+      <ul>
+        {names.map((n, index) => (
+          <li key={index}>{n}</li>
+        ))}
+      </ul>
+      <input type="text" value={name} onChange={handleInputChange} />
+      <button onClick={handleSaveClick}>Сохранить</button>
     </div>
   );
-}
+};
 
 export default App;
